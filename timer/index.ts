@@ -106,7 +106,11 @@ document.addEventListener('DOMContentLoaded', () => {
       const sec = data.seconds === 1 ? 'секунда' : data.seconds >= 2 && data.seconds <= 4 ? 'секунды' : 'секунд';
       const min = data.minutes === 1 ? 'минута' : data.minutes >= 2 && data.minutes <= 4 ? 'минуты' : 'минут';
       const hour = data.hours === 1 ? 'час' : data.hours >= 2 && data.hours <= 4 ? 'часа' : 'часов';
-      const day = data.days <= 20 ? countDays(data.days) : countDays(data.days % 10)
+      const day = data.days <= 20
+        ? countDays(data.days)
+        : (data.days > 20 &&  data.days <= 99)
+          ? countDays(data.days % 10)
+          : countDays(data.days % 100)
 
       /**
        * Функция принимает кол-во дней и в зависимости от их кол-ва выбирает правильный вариант
