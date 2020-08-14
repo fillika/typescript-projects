@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
      * Метод создает объект и возвращает его.
      * Объект содержит в себе данные общего кол-ва времени, а так же отдельно считаются секунды,
      * часы, минуты и дни.
-     * @param deadline
+     * @param {string} deadline
      */
     getTimeRemaining(deadline: string): ITime {
       const currentDay: Date = new Date();
@@ -106,7 +106,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const sec = data.seconds === 1 ? 'секунда' : data.seconds >= 2 && data.seconds <= 4 ? 'секунды' : 'секунд';
       const min = data.minutes === 1 ? 'минута' : data.minutes >= 2 && data.minutes <= 4 ? 'минуты' : 'минут';
       const hour = data.hours === 1 ? 'час' : data.hours >= 2 && data.hours <= 4 ? 'часа' : 'часов';
-      const day = data.days === 1 ? 'день' : data.days >= 2 && data.days <= 4 ? 'дня' : 'дней';
+      const day = data.days <= 20 ? countDays(data.days) : countDays(data.days % 10)
+
+      /**
+       * Функция принимает кол-во дней и в зависимости от их кол-ва выбирает правильный вариант
+       * @param {number} days оставшееся  кол-во дней
+       */
+      function countDays(days:number):string {
+        return days === 1 ? 'день' : (days >= 2 && days <= 4) ? 'дня' : 'дней'
+      }
 
       return `
         <div class='timer-body'>
@@ -125,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
      * Принимает готовую строку в формате html, чтобы вставить её на страницу
      * @param {string} data
      */
-    render(data: string) {
+    render(data: string):void {
       this.el.innerHTML = data;
     }
 

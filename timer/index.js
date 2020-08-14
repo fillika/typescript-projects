@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function () {
          * Метод создает объект и возвращает его.
          * Объект содержит в себе данные общего кол-ва времени, а так же отдельно считаются секунды,
          * часы, минуты и дни.
-         * @param deadline
+         * @param {string} deadline
          */
         Timer.prototype.getTimeRemaining = function (deadline) {
             var currentDay = new Date();
@@ -84,7 +84,14 @@ document.addEventListener('DOMContentLoaded', function () {
             var sec = data.seconds === 1 ? 'секунда' : data.seconds >= 2 && data.seconds <= 4 ? 'секунды' : 'секунд';
             var min = data.minutes === 1 ? 'минута' : data.minutes >= 2 && data.minutes <= 4 ? 'минуты' : 'минут';
             var hour = data.hours === 1 ? 'час' : data.hours >= 2 && data.hours <= 4 ? 'часа' : 'часов';
-            var day = data.days === 1 ? 'день' : data.days >= 2 && data.days <= 4 ? 'дня' : 'дней';
+            var day = data.days <= 20 ? countDays(data.days) : countDays(data.days % 10);
+            /**
+             * Функция принимает кол-во дней и в зависимости от их кол-ва выбирает правильный вариант
+             * @param {number} days оставшееся  кол-во дней
+             */
+            function countDays(days) {
+                return days === 1 ? 'день' : (days >= 2 && days <= 4) ? 'дня' : 'дней';
+            }
             return "\n        <div class='timer-body'>\n            <div class='timer-body__title'>\u0414\u043E \u044D\u0444\u0438\u0440\u0430 \u043E\u0441\u0442\u0430\u043B\u043E\u0441\u044C</div>\n            <div class='timer-body__time'>\n                <span class='timer-body__number'>" + data.days + "</span> " + day + "\n                <span class='timer-body__number'>" + data.hours + "</span> " + hour + "\n                <span class='timer-body__number'>" + data.minutes + "</span> " + min + "\n                <span class='timer-body__number'>" + data.seconds + "</span> " + sec + "\n            </div>\n        </div>\n      ";
         };
         /**
