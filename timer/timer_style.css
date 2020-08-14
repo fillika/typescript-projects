@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Pangolin&display=swap');
+
+.timer-body {
+  font-family: 'Pangolin', cursive;
+  font-size: 28px;
+  text-align: center;
+  max-width: 500px;
+  line-height: 1.25;
+  color: #9a1a1a;
+  font-weight: bold;
+  margin: 1em auto;
+  border: 2px solid blueviolet;
+  padding: 1em 2em;
+}
+
+.timer-body__number {
+  font-size: 1.15em;
+}
