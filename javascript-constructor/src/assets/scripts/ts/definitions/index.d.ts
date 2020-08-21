@@ -1,12 +1,11 @@
 interface IModel {
-  type: string,
-  value: string | string[],
-  options: {
-    tag: string,
-    styles: string,
-    alt?: string
-  },
+  readonly value: string | string[];
+  readonly options: TOptions;
+
+  toHTML(): string | never
 }
+
+type TOptions = { [key: string]: string }
 
 interface IFunc {
   [key: string]: (block: IModel) => string

@@ -1,4 +1,3 @@
-import { templates } from './model/templates';
 import model from './model/model';
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -10,11 +9,6 @@ document.addEventListener('DOMContentLoaded', () => {
    * Функции находятся в объекте templates
    */
   model.forEach((block: IModel) => {
-    const name = block.type;
-    const generate = templates[name];
-
-    if (generate) {
-      container?.insertAdjacentHTML('beforeend', generate(block));
-    }
+      container?.insertAdjacentHTML('beforeend', block.toHTML());
   });
 });
