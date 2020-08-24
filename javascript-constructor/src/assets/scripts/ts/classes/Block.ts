@@ -4,7 +4,7 @@ class Block implements IModel {
   readonly value: string | string[];
   readonly options: TOptions;
 
-  constructor(type: string, value: string | string[], options: TOptions) {
+  constructor(value: string | string[], options: TOptions) {
     this.value = value;
     this.options = options;
   }
@@ -16,7 +16,7 @@ class Block implements IModel {
 
 export class TitleBlock extends Block {
   constructor(value: string | string[], options: TOptions) {
-    super('title', value, options);
+    super(value, options);
   }
 
   toHTML(): string {
@@ -33,7 +33,7 @@ export class TitleBlock extends Block {
 
 export class TextBlock extends Block {
   constructor(value: string | string[], options: TOptions) {
-    super('text', value, options);
+    super(value, options);
   }
 
   toHTML(): string {
@@ -48,9 +48,9 @@ export class TextBlock extends Block {
   }
 }
 
-export class TextColumsBlock extends Block {
+export class TextColumnsBlock extends Block {
   constructor(value: string | string[], options: TOptions) {
-    super('text', value, options);
+    super(value, options);
   }
 
   toHTML(): string {
@@ -67,7 +67,7 @@ export class TextColumsBlock extends Block {
 
 export class ImageBlock extends Block {
   constructor(value: string | string[], options: TOptions) {
-    super('image', value, options);
+    super(value, options);
   }
 
   toHTML(): string {

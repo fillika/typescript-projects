@@ -1,5 +1,5 @@
 import img from '@img/image.png';
-import { TitleBlock, ImageBlock, TextBlock, TextColumsBlock } from '../classes/Block';
+import { TitleBlock, ImageBlock, TextBlock, TextColumnsBlock } from '../classes/Block';
 
 const model: IModel[] = [
   new TitleBlock('Test title', {
@@ -10,7 +10,7 @@ const model: IModel[] = [
     tag: 'p',
     styles: 'color: blue;',
   }),
-  new TextColumsBlock([
+  new TextColumnsBlock([
     'Lorem ipsum dolorem',
     'Lorem ipsum dadada 2',
     'Lorem ipsum nonono 3',

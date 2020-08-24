@@ -3,11 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="0f3bed7e-8f09-47ae-a3af-affaefe9618c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javascript-constructor/src/assets/scripts/ts/definitions/index.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/javascript-constructor/src/assets/scripts/ts/definitions/index.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javascript-constructor/src/assets/scripts/ts/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/javascript-constructor/src/assets/scripts/ts/index.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/javascript-constructor/src/assets/scripts/ts/classes/Block.ts" beforeDir="false" afterPath="$PROJECT_DIR$/javascript-constructor/src/assets/scripts/ts/classes/Block.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/javascript-constructor/src/assets/scripts/ts/model/model.ts" beforeDir="false" afterPath="$PROJECT_DIR$/javascript-constructor/src/assets/scripts/ts/model/model.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javascript-constructor/src/assets/scripts/ts/model/templates.ts" beforeDir="false" afterPath="$PROJECT_DIR$/javascript-constructor/src/assets/scripts/ts/model/templates.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/javascript-constructor/src/assets/scripts/ts/utils/utils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/javascript-constructor/src/assets/scripts/ts/utils/utils.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,7 +38,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../Работа/General project" />
     <property name="list.type.of.created.stylesheet" value="CSS" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -59,7 +56,9 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1598010792938</updated>
-      <workItem from="1598010793989" duration="13473000" />
+      <workItem from="1598010793989" duration="14863000" />
+      <workItem from="1598179167375" duration="1198000" />
+      <workItem from="1598253899308" duration="1218000" />
     </task>
     <servers />
   </component>
@@ -72,6 +71,10 @@
     </option>
   </component>
   <component name="WindowStateProjectService">
+    <state x="1060" y="452" key="FileChooserDialogImpl" timestamp="1598280824483">
+      <screen x="0" y="0" width="2560" height="1394" />
+    </state>
+    <state x="1060" y="452" key="FileChooserDialogImpl/0.0.2560.1394/2560.0.2560.1400@0.0.2560.1394" timestamp="1598280824483" />
     <state x="943" y="313" width="672" height="678" key="search.everywhere.popup" timestamp="1598023299526">
       <screen x="0" y="0" width="2560" height="1394" />
     </state>
