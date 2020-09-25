@@ -1,0 +1,27 @@
+doctype html
+html(lang='ru')
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport', content='width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0')
+    meta(http-equiv='X-UA-Compatible', content='ie=edge')
+    title Tic Tac Toe
+  body
+    include ../partials/header
+
+    div
+      button(id='start' type='button') Начать игру
+      button(id='reset' type='button') Сброс
+
+    div#root
+      div(class='field field--is-active')
+        div(data-id='0' class='cell js-cell')
+        div(data-id='1' class='cell js-cell')
+        div(data-id='2' class='cell js-cell')
+        div(data-id='3' class='cell js-cell')
+        div(data-id='4' class='cell js-cell')
+        div(data-id='5' class='cell js-cell')
+        div(data-id='6' class='cell js-cell')
+        div(data-id='7' class='cell js-cell')
+        div(data-id='8' class='cell js-cell')
+
+    include ../partials/footer
