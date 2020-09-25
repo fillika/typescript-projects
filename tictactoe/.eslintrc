@@ -49,6 +49,11 @@
     ],
     "class-methods-use-this": "off",
     "lines-between-class-members": "off",
-    "no-plusplus": "off"
+    "no-plusplus": "off",
+    "template-curly-spacing": [
+      "error",
+      "always"
+    ],
+    "no-use-before-define": "off"
   }
 }

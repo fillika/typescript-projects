@@ -1,4 +1,5 @@
 import Dom from './Dom';
+import { isHTMLElement } from './helpers';
 
 type TCombinations = number[];
 
@@ -7,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     combinations: TCombinations[];
     aI: number[];
     player: number[];
+    cellsId: number[];
 
     constructor() {
       super();
@@ -22,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ];
       this.aI = [];
       this.player = [];
+      this.cellsId = Array.from(Array(9).keys());
 
       this.playerMove = this.playerMove.bind(this);
       this.aIMove = this.aIMove.bind(this);
@@ -58,12 +61,18 @@ document.addEventListener('DOMContentLoaded', () => {
      * Тут будет запуск новой игры
      */
     reset() {
-      // Code...
+      this.aI = [];
+      this.player = [];
+      this.cellsId = Array.from(Array(9).keys());
+      this.cells.forEach(cell => {
+        if (isHTMLElement(cell)) cell.classList.remove('cell--tic', 'cell--tac', 'cell--non-active');
+      });
+      this.aIMoveFirstMove();
     }
 
     playerMove(cell: Node) {
       cell.addEventListener('click', () => {
-        if (cell instanceof HTMLElement) {
+        if (isHTMLElement(cell)) {
           // Если ячейка уже выбрана
           if (cell.classList.contains('cell--non-active')) {
             return;
@@ -71,15 +80,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
           const { id } = cell.dataset;
 
-          if (id) {
+          if (id !== undefined) {
             this.player.push(+id);
             cell.classList.add('cell--tic', 'cell--non-active');
+
+            this.filterNumbers(+id);
 
             if (this.player.length >= 3) {
               const isWin = this.checkWin(this.player); // Проверка победы Игрока
 
               if (isWin) {
                 // Логика победы
+                this.win('You');
               } else {
                 // Продолжение игры
               }
@@ -104,10 +116,11 @@ document.addEventListener('DOMContentLoaded', () => {
     aIMoveFirstMove() {
       // Сначала первый ходу Ищем случайный ID.
       const id = Math.floor(Math.random() * 9);
+      const cell = document.querySelector(`[data-id="${ id }"]`);
       this.aI.push(id);
 
-      if (this.cells[id] instanceof HTMLElement) {
-        this.cells[id].classList.add('cell--tac', 'cell--non-active');
+      if (isHTMLElement(cell)) {
+        cell.classList.add('cell--tac', 'cell--non-active');
       }
     }
 
@@ -116,12 +129,26 @@ document.addEventListener('DOMContentLoaded', () => {
      * @param {array} arr - массив чисел, по сути ID клеток
      */
     checkWin(arr: number[]): boolean {
-      let count = 0;
+      let result = false;
 
-      this.combinations.forEach(combo => {
+      /**
+       * В цикле Я проверяю есть ли совпадения по выигрышным комбинациям.
+       * Если есть - тогда Я заканчиваю проверку, прерываю цикл и выдаю результат в виде true.
+       * Если нет - то переменная result останется false
+       */
+      for (let i = 0; i < this.combinations.length; i++) {
+        result = getResult(this.combinations[i]);
+        if (result) break;
+      }
+
+      return result;
+
+      function getResult(combo: TCombinations): boolean {
+        let count = 0;
+
         combo.forEach(number => {
           if (count === 3) {
-            return;
+            return count === 3;
           }
 
           const result = arr.indexOf(number);
@@ -132,9 +159,27 @@ document.addEventListener('DOMContentLoaded', () => {
             count = 0;
           }
         });
-      });
 
-      return count === 3;
+        return count === 3;
+      }
+    }
+
+    /**
+     * Тут Я фильтрую числа, оставляю только те, которые доступны для выбора (для ИИ)
+     * @param {number} id - выбранный ID
+     */
+    filterNumbers(id: number): void {
+      this.cellsId = this.cellsId.filter(number => number !== id);
+    }
+
+    /**
+     * Функция победы. Запускается, когда определяется победитель.
+     * Передаем текст, в который подставляем имя победителя
+     * @param {string} winner
+     */
+    win(winner: string) {
+      // eslint-disable-next-line no-console
+      console.log(`${ winner } is WIN`, this.player);
     }
   }
 
