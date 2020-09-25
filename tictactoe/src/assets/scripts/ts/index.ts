@@ -5,23 +5,28 @@ type TCombinations = number[];
 document.addEventListener('DOMContentLoaded', () => {
   class Actions extends Dom {
     combinations: TCombinations[];
-    AI: number[];
+    aI: number[];
     player: number[];
 
     constructor() {
       super();
       this.combinations = [
-        [1, 2, 3],
-        [4, 5, 6],
-        [7, 8, 9],
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
         [1, 4, 7],
         [2, 5, 8],
-        [3, 6, 9],
-        [1, 5, 9],
-        [3, 5, 7],
+        [0, 4, 8],
+        [2, 4, 6],
       ];
-      this.AI = [];
+      this.aI = [];
       this.player = [];
+
+      this.playerMove = this.playerMove.bind(this);
+      this.aIMove = this.aIMove.bind(this);
+      this.start = this.start.bind(this);
+      this.reset = this.reset.bind(this);
     }
 
     init() {
@@ -37,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     start() {
-      this.AIHandle();
+      this.aIMoveFirstMove();
 
       /**
        * Отключаю кнопку, чтобы нельзя было запускать игру более 1 раза
@@ -46,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
         this.startButton.disabled = true;
       }
 
-      this.cells.forEach(this.handleCell);
+      this.cells.forEach(this.playerMove.bind(this));
     }
 
     /**
@@ -56,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Code...
     }
 
-    handleCell(cell: Node) {
+    playerMove(cell: Node) {
       cell.addEventListener('click', () => {
         if (cell instanceof HTMLElement) {
           // Если ячейка уже выбрана
@@ -64,18 +69,72 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
           }
 
-          cell.classList.add('cell--tic', 'cell--non-active');
+          const { id } = cell.dataset;
+
+          if (id) {
+            this.player.push(+id);
+            cell.classList.add('cell--tic', 'cell--non-active');
+
+            if (this.player.length >= 3) {
+              const isWin = this.checkWin(this.player); // Проверка победы Игрока
+
+              if (isWin) {
+                // Логика победы
+              } else {
+                // Продолжение игры
+              }
+            }
+          }
         }
       });
     }
 
-    AIHandle() {
-      // Сначала первый ходу Ищем случайный ID.
-      const firstId = Math.floor(Math.random() * 9);
+    aIMove() {
+      if (this.aI.length >= 3) {
+        const isWin = this.checkWin(this.aI); // Проверка победы Игрока
 
-      if (this.cells[firstId] instanceof HTMLElement) {
-        this.cells[firstId].classList.add('cell--tac', 'cell--non-active');
+        if (isWin) {
+          // Логика победы
+        } else {
+          // Продолжение игры
+        }
       }
+    }
+
+    aIMoveFirstMove() {
+      // Сначала первый ходу Ищем случайный ID.
+      const id = Math.floor(Math.random() * 9);
+      this.aI.push(id);
+
+      if (this.cells[id] instanceof HTMLElement) {
+        this.cells[id].classList.add('cell--tac', 'cell--non-active');
+      }
+    }
+
+    /**
+     * Функция проверки победы
+     * @param {array} arr - массив чисел, по сути ID клеток
+     */
+    checkWin(arr: number[]): boolean {
+      let count = 0;
+
+      this.combinations.forEach(combo => {
+        combo.forEach(number => {
+          if (count === 3) {
+            return;
+          }
+
+          const result = arr.indexOf(number);
+
+          if (result !== -1) {
+            count++;
+          } else {
+            count = 0;
+          }
+        });
+      });
+
+      return count === 3;
     }
   }
 
