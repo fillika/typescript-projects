@@ -1,5 +1,5 @@
 import Dom from './Dom';
-import { isHTMLElement } from './helpers';
+import { getMaxOfArray, isHTMLElement } from './helpers';
 import { TCombinations } from './definitions/types';
 
 export default class Actions extends Dom {
@@ -63,7 +63,7 @@ export default class Actions extends Dom {
     this.player = [];
     this.cellsId = Array.from(Array(9).keys());
     this.cells.forEach(cell => {
-      if (isHTMLElement(cell)) cell.classList.remove('cell--tic', 'cell--tac', 'cell--non-active');
+      if (isHTMLElement(cell)) cell.classList.remove(this.classes.tic, this.classes.tac, this.classes.nonActive);
     });
     this.aIMoveFirstMove();
   }
@@ -72,7 +72,7 @@ export default class Actions extends Dom {
     cell.addEventListener('click', () => {
       if (isHTMLElement(cell)) {
         // Если ячейка уже выбрана
-        if (cell.classList.contains('cell--non-active')) {
+        if (cell.classList.contains(this.classes.nonActive)) {
           return;
         }
 
@@ -80,7 +80,7 @@ export default class Actions extends Dom {
 
         if (id !== undefined) {
           this.player.push(+id);
-          cell.classList.add('cell--tic', 'cell--non-active');
+          cell.classList.add(this.classes.tic, this.classes.nonActive);
 
           this.filterNumbers(+id);
           this.aIMove();
@@ -101,13 +101,46 @@ export default class Actions extends Dom {
   }
 
   aIMove(): void {
-    // Логика ИИ
+    let allCombo: TCombinations[] = [];
+
+    /**
+     *  Сначала Я беру все возможные комбинации. Я беру совпадения по комбинациям и везде, где они есть
+     *  Я пушу в общий массив
+     */
+    this.combinations.forEach(combo => this.aI.forEach(number => combo.includes(number) && allCombo.push(combo)));
+    console.log('Это все массивы', allCombo);
+
+    /**
+     * Потом фильтрую на уже занятые клетки. Беру все занятые клетки игроком и проверяю их наличие в
+     * комбинациях. Если они есть, значит комбинация нам не подходит. Тут остаются те, что нам подходя
+     */
+    this.player.forEach(cellId => allCombo = allCombo.filter(array => array.every(number => number !== cellId)));
+    console.log('Это те, что подходят', allCombo);
+
+    /**
+     * Дальше Я фильтрую на занятые AI клетки. Сначала Я делаю конкатенацию всех чисел,
+     * чтобы получить из них один массив, а потом фильтрую его
+     */
+    let allNumbers = [].concat(...allCombo);
+    this.aI.forEach(number => allNumbers = allNumbers.filter(num => number !== num));
+    console.log(allNumbers);
+
+    /**
+     * Далее Я выбираю максимальное число и оно будет следующим ID для хода
+     */
+    const id = getMaxOfArray(allNumbers);
+    this.aiGetCell(id);
+
+    // console.log('Клетки оппонента', this.player);
+    // console.log('allCombo', allCombo);
+    // console.log('Свободные клетки', this.cellsId);
 
     if (this.aI.length >= 3) {
       const isWin = this.checkWin(this.aI); // Проверка победы Игрока
 
       if (isWin) {
         // Логика победы
+        console.log('AI Win');
       } else {
         // Продолжение игры
       }
@@ -117,11 +150,16 @@ export default class Actions extends Dom {
   aIMoveFirstMove(): void {
     // Сначала первый ходу Ищем случайный ID.
     const id = Math.floor(Math.random() * 9);
+    this.aiGetCell(id);
+  }
+
+  aiGetCell(id: number): void {
     const cell = document.querySelector(`[data-id="${ id }"]`);
     this.aI.push(id);
+    this.filterNumbers(id);
 
     if (isHTMLElement(cell)) {
-      cell.classList.add('cell--tac', 'cell--non-active');
+      cell.classList.add(this.classes.tac, this.classes.nonActive);
     }
   }
 
@@ -178,7 +216,7 @@ export default class Actions extends Dom {
    * Передаем текст, в который подставляем имя победителя
    * @param {string} winner
    */
-  win(winner: string):void {
+  win(winner: string): void {
     // eslint-disable-next-line no-console
     console.log(`${ winner } is WIN`, this.player);
   }
