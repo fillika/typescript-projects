@@ -108,14 +108,12 @@ export default class Actions extends Dom {
      *  Я пушу в общий массив
      */
     this.combinations.forEach(combo => this.aI.forEach(number => combo.includes(number) && allCombo.push(combo)));
-    console.log('Это все массивы', allCombo);
 
     /**
      * Потом фильтрую на уже занятые клетки. Беру все занятые клетки игроком и проверяю их наличие в
-     * комбинациях. Если они есть, значит комбинация нам не подходит. Тут остаются те, что нам подходя
+     * комбинациях. Если они есть, значит комбинация нам не подходит. Тут остаются те, что нам подходят
      */
     this.player.forEach(cellId => allCombo = allCombo.filter(array => array.every(number => number !== cellId)));
-    console.log('Это те, что подходят', allCombo);
 
     /**
      * Дальше Я фильтрую на занятые AI клетки. Сначала Я делаю конкатенацию всех чисел,
@@ -123,17 +121,16 @@ export default class Actions extends Dom {
      */
     let allNumbers = [].concat(...allCombo);
     this.aI.forEach(number => allNumbers = allNumbers.filter(num => number !== num));
-    console.log(allNumbers);
 
     /**
-     * Далее Я выбираю максимальное число и оно будет следующим ID для хода
+     * Далее Я выбираю максимальное число и оно будет следующим ID для хода. Тут нужен дополнительный слой
+     * логики, который будет выбирать вес и оптимальное число. Можно попробовать сравнить все числа
      */
+    console.log('Это те, что подходят', allCombo);
+    console.log('allNumbers', allNumbers);
+
     const id = getMaxOfArray(allNumbers);
     this.aiGetCell(id);
-
-    // console.log('Клетки оппонента', this.player);
-    // console.log('allCombo', allCombo);
-    // console.log('Свободные клетки', this.cellsId);
 
     if (this.aI.length >= 3) {
       const isWin = this.checkWin(this.aI); // Проверка победы Игрока
