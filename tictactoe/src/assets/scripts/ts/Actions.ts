@@ -101,36 +101,22 @@ export default class Actions extends Dom {
   }
 
   aIMove(): void {
-    let allCombo: TCombinations[] = [];
+    /**
+     * Найти все комбинации для ИИ
+     */
+    const allCombinations = this.getAllCombo(this.aI);
 
     /**
-     *  Сначала Я беру все возможные комбинации. Я беру совпадения по комбинациям и везде, где они есть
-     *  Я пушу в общий массив
+     * Отфильтровать все занятые клетки на поле
      */
-    this.combinations.forEach(combo => this.aI.forEach(number => combo.includes(number) && allCombo.push(combo)));
-
-    /**
-     * Потом фильтрую на уже занятые клетки. Беру все занятые клетки игроком и проверяю их наличие в
-     * комбинациях. Если они есть, значит комбинация нам не подходит. Тут остаются те, что нам подходят
-     */
-    this.player.forEach(cellId => allCombo = allCombo.filter(array => array.every(number => number !== cellId)));
-
-    /**
-     * Дальше Я фильтрую на занятые AI клетки. Сначала Я делаю конкатенацию всех чисел,
-     * чтобы получить из них один массив, а потом фильтрую его
-     */
-    let allNumbers = [].concat(...allCombo);
-    this.aI.forEach(number => allNumbers = allNumbers.filter(num => number !== num));
+    const filteredCombinations = this.filteredCombo(allCombinations);
 
     /**
      * Далее Я выбираю максимальное число и оно будет следующим ID для хода. Тут нужен дополнительный слой
      * логики, который будет выбирать вес и оптимальное число. Можно попробовать сравнить все числа
      */
-    console.log('Это те, что подходят', allCombo);
-    console.log('allNumbers', allNumbers);
-
-    const id = getMaxOfArray(allNumbers);
-    this.aiGetCell(id);
+    // const id = getMaxOfArray(allNumbers);
+    // this.aiGetCell(id);
 
     if (this.aI.length >= 3) {
       const isWin = this.checkWin(this.aI); // Проверка победы Игрока
@@ -144,10 +130,41 @@ export default class Actions extends Dom {
     }
   }
 
+  /**
+   * Функция принимает массив чисел (которые уже имеются либо у ИИ, либо у игрока)
+   * И находит по этим числам все кобинации, которые могут привести к победе
+   * Функция не учитывает занятые клетки, она не фильтрует
+   * @param arr
+   */
+  getAllCombo(arr: number[]): TCombinations[] {
+    const result: TCombinations[] = [];
+
+    this.combinations.forEach(combination => {
+      arr.forEach(number => combination.includes(number) && result.push(combination));
+    });
+
+    return result;
+  }
+
+  /**
+   * Функция фильтрует все занятые клетки в массиве из списка возможных комбинаций
+   * @param arr
+   */
+  filteredCombo(arr: TCombinations[]): TCombinations[] {
+    const result = [];
+
+    arr.forEach(combination => {
+      console.log(combination);
+    });
+
+    return result;
+  }
+
   aIMoveFirstMove(): void {
     // Сначала первый ходу Ищем случайный ID.
     const id = Math.floor(Math.random() * 9);
-    this.aiGetCell(id);
+    // this.aiGetCell(id);
+    this.aiGetCell(4);
   }
 
   aiGetCell(id: number): void {
