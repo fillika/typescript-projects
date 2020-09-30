@@ -15,6 +15,8 @@ export default class Actions extends CommonActions {
   playerMove(cell: Node): void {
     cell.addEventListener('click', () => {
       if (isHTMLElement(cell)) {
+        if (!this.isGame) return;
+
         // Если ячейка уже выбрана
         if (cell.classList.contains(this.classes.nonActive)) {
           this.setMessage('Выберите свободную клетку');
@@ -47,6 +49,7 @@ export default class Actions extends CommonActions {
 
             if (isWin) {
               this.setMessage('Вы победили');
+              this.isGame = false;
             }
           }
         }
@@ -79,6 +82,7 @@ export default class Actions extends CommonActions {
 
       if (isWin) {
         this.setMessage('Победил компьютер');
+        this.isGame = false;
       }
     }
   }
@@ -155,6 +159,7 @@ export default class Actions extends CommonActions {
     } else {
       this.aiGetCell(this.cellsId[0]);
       this.setMessage('Ничья');
+      this.isGame = false;
     }
   }
 }

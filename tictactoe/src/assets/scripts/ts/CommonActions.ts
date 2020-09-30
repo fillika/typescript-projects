@@ -22,6 +22,7 @@ export default class CommonActions extends Data {
       if (isHTMLElement(cell)) cell.classList.remove(this.classes.tic, this.classes.tac, this.classes.nonActive);
     });
     this.aIMoveFirstMove();
+    this.isGame = true;
   }
 
   aIMoveFirstMove(): void {
