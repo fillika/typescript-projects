@@ -47,10 +47,7 @@ export default class Actions extends CommonActions {
             const isWin = this.checkWin(this.player); // Проверка победы Игрока
 
             if (isWin) {
-              // Логика победы
               this.setMessage('Вы победили');
-            } else {
-              // Продолжение игры
             }
           }
         }
@@ -82,10 +79,7 @@ export default class Actions extends CommonActions {
       const isWin = this.checkWin(this.aI); // Проверка победы Игрока
 
       if (isWin) {
-        // Логика победы
         this.setMessage('Победил компьютер');
-      } else {
-        // Продолжение игры
       }
     }
   }
@@ -177,46 +171,6 @@ export default class Actions extends CommonActions {
     } else {
       this.aiGetCell(this.cellsId[0]);
       this.setMessage('Ничья');
-    }
-  }
-
-  /**
-   * Функция проверки победы
-   * @param {array} arr - массив чисел, по сути ID клеток
-   */
-  checkWin(arr: number[]): boolean {
-    let result = false;
-
-    /**
-     * В цикле Я проверяю есть ли совпадения по выигрышным комбинациям.
-     * Если есть - тогда Я заканчиваю проверку, прерываю цикл и выдаю результат в виде true.
-     * Если нет - то переменная result останется false
-     */
-    for (let i = 0; i < this.combinations.length; i++) {
-      result = getResult(this.combinations[i]);
-      if (result) break;
-    }
-
-    return result;
-
-    function getResult(combo: TCombinations): boolean {
-      let count = 0;
-
-      combo.forEach(number => {
-        if (count === 3) {
-          return count === 3;
-        }
-
-        const result = arr.indexOf(number);
-
-        if (result !== -1) {
-          count++;
-        } else {
-          count = 0;
-        }
-      });
-
-      return count === 3;
     }
   }
 }

@@ -1,5 +1,6 @@
 import Data from './Data';
 import { isHTMLElement } from './helpers';
+import { TCombinations } from './definitions/types';
 
 export default class CommonActions extends Data {
   constructor() {
@@ -7,18 +8,6 @@ export default class CommonActions extends Data {
 
     this.reset = this.reset.bind(this);
     this.setMessage = this.setMessage.bind(this);
-  }
-
-  init(): void {
-    if (this.startButton) {
-      this.startButton.addEventListener('click', this.start);
-    } else {
-      return;
-    }
-
-    if (this.resetButton) {
-      this.resetButton.addEventListener('click', this.reset);
-    }
   }
 
   /**
@@ -39,6 +28,48 @@ export default class CommonActions extends Data {
     // Сначала первый ходу Ищем случайный ID.
     const id = Math.floor(Math.random() * 9);
     this.aiGetCell(id);
+  }
+
+  /**
+   * Функция проверки победы
+   * @param {array} arr - массив чисел, по сути ID клеток
+   */
+  checkWin(arr: number[]): boolean {
+    let result = false;
+
+    /**
+     * В цикле Я проверяю есть ли совпадения по выигрышным комбинациям.
+     * Если есть - тогда Я заканчиваю проверку, прерываю цикл и выдаю результат в виде true.
+     * Если нет - то переменная result останется false
+     */
+    for (let i = 0; i < this.combinations.length; i++) {
+      result = getResult(this.combinations[i]);
+      if (result) break;
+    }
+
+    return result;
+
+    function getResult(combo: TCombinations): boolean {
+      let count = 0;
+
+      combo.forEach(getCount);
+
+      function getCount(number: number): void {
+        if (count === 3) {
+          return;
+        }
+
+        const result = arr.indexOf(number);
+
+        if (result !== -1) {
+          count++;
+        } else {
+          count = 0;
+        }
+      }
+
+      return count === 3;
+    }
   }
 
   aiGetCell(id: number): void {
