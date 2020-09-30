@@ -11,23 +11,6 @@ export default class Actions extends CommonActions {
     this.getIdAndGetCell = this.getIdAndGetCell.bind(this);
     this.playerMove = this.playerMove.bind(this);
     this.aIMove = this.aIMove.bind(this);
-    this.start = this.start.bind(this);
-  }
-
-  start(): void {
-    if (this.resetButton instanceof HTMLButtonElement) {
-      this.resetButton.disabled = false;
-    }
-
-    /**
-     * Отключаю кнопку, чтобы нельзя было запускать игру более 1 раза
-     */
-    if (this.startButton instanceof HTMLButtonElement) {
-      this.startButton.disabled = true;
-    }
-
-    this.aIMoveFirstMove();
-    this.cells.forEach(this.playerMove.bind(this));
   }
 
   playerMove(cell: Node): void {
