@@ -32,8 +32,8 @@ export default class Init extends Actions {
     if (this.startButton instanceof HTMLButtonElement) {
       this.startButton.disabled = true;
     }
-    this.isGame = true;
 
+    this.isGame = true;
     this.aIMoveFirstMove();
     this.cells.forEach(this.playerMove.bind(this));
   }
