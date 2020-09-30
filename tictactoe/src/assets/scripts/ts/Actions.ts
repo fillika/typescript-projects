@@ -4,6 +4,7 @@ import { TCombinations } from './definitions/types';
 
 export default class Actions extends Dom {
   combinations: TCombinations[];
+  aIWinsCombinations: TCombinations[];
   aI: number[];
   player: number[];
   cellsId: number[];
@@ -21,10 +22,13 @@ export default class Actions extends Dom {
       [2, 4, 6],
     ];
     this.aI = [];
+    this.aIWinsCombinations = []; // Тут содержаться все комбинации, которые позволяют Ai выиграть
     this.player = [];
     this.cellsId = Array.from(Array(9).keys());
 
     this.playerMove = this.playerMove.bind(this);
+    this.filteredUsedCellsAi = this.filteredUsedCellsAi.bind(this);
+    this.filteredUsedCellsPersonForAI = this.filteredUsedCellsPersonForAI.bind(this);
     this.aIMove = this.aIMove.bind(this);
     this.start = this.start.bind(this);
     this.reset = this.reset.bind(this);
@@ -104,19 +108,38 @@ export default class Actions extends Dom {
     /**
      * Найти все комбинации для ИИ
      */
-    const allCombinations = this.getAllCombo(this.aI);
+    this.aIWinsCombinations = this.getAllCombo(this.aI);
 
     /**
-     * Отфильтровать все занятые клетки на поле
+     * Отфильтровать все занятые клетки на поле. Найти комбинации для выигрыша
+     * Следующие 2 строчки сначала фильтруют все занятые клетки ИИ
+     * Потом удаляют комбинации, в которых есть занятые клетки игроком
      */
-    const filteredCombinations = this.filteredCombo(allCombinations);
+    this.aI.forEach(this.filteredUsedCellsAi);
+    this.player.forEach(this.filteredUsedCellsPersonForAI);
 
     /**
-     * Далее Я выбираю максимальное число и оно будет следующим ID для хода. Тут нужен дополнительный слой
-     * логики, который будет выбирать вес и оптимальное число. Можно попробовать сравнить все числа
+     * Следующие строки выбирают оптимальное решение из полученных комбинаций.
+     * Чем меньше длина массива, тем лучше (тем меньше осталось ходов)
      */
-    // const id = getMaxOfArray(allNumbers);
-    // this.aiGetCell(id);
+    let res: number[] = [];
+    this.aIWinsCombinations.forEach(combination => {
+      if (res.length === 0) {
+        res = combination;
+      }
+
+      if (res.length > combination.length) {
+        res = combination;
+      }
+    });
+    const [id] = res;
+
+
+    if (id !== undefined) {
+      this.aiGetCell(id);
+    } else {
+      this.aiGetCell(this.cellsId[0]);
+    }
 
     if (this.aI.length >= 3) {
       const isWin = this.checkWin(this.aI); // Проверка победы Игрока
@@ -147,28 +170,31 @@ export default class Actions extends Dom {
   }
 
   /**
-   * Функция фильтрует все занятые клетки в массиве из списка возможных комбинаций
-   * @param arr
+   * Функция фильтрует все комбинации. Т.е. убирает из них все занятые клетки
+   * @param number
    */
-  filteredCombo(arr: TCombinations[]): TCombinations[] {
-    const result = [];
+  filteredUsedCellsAi(number: number): void {
+    this.aIWinsCombinations = this.aIWinsCombinations.map(combination => combination.filter(num => number !== num));
+  }
 
-    arr.forEach(combination => {
-      console.log(combination);
-    });
-
-    return result;
+  /**
+   * Эта строчка фильтрует комбинации, в которых есть клетки игрока и они не подходят
+   * Т.Е. не подходит вся комбинация, если есть хотя бы 1 клетка
+   * @param number
+   */
+  filteredUsedCellsPersonForAI(number: number): void {
+    this.aIWinsCombinations = this.aIWinsCombinations.filter(combination => !combination.includes(number));
   }
 
   aIMoveFirstMove(): void {
     // Сначала первый ходу Ищем случайный ID.
     const id = Math.floor(Math.random() * 9);
-    // this.aiGetCell(id);
-    this.aiGetCell(4);
+    this.aiGetCell(id);
   }
 
   aiGetCell(id: number): void {
     const cell = document.querySelector(`[data-id="${ id }"]`);
+
     this.aI.push(id);
     this.filterNumbers(id);
 
