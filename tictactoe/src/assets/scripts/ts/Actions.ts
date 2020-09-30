@@ -1,5 +1,4 @@
 import { getMaxOfArray, isHTMLElement } from './helpers';
-import { TCombinations } from './definitions/types';
 import CommonActions from './CommonActions';
 
 export default class Actions extends CommonActions {
@@ -84,21 +83,6 @@ export default class Actions extends CommonActions {
     }
   }
 
-  /**
-   * Функция принимает массив чисел (которые уже имеются либо у ИИ, либо у игрока)
-   * И находит по этим числам все кобинации, которые могут привести к победе
-   * Функция не учитывает занятые клетки, она не фильтрует
-   * @param arr
-   */
-  getAllCombo(arr: number[]): TCombinations[] {
-    const result: TCombinations[] = [];
-
-    this.combinations.forEach((combination) => {
-      arr.forEach((number) => combination.includes(number) && result.push(combination));
-    });
-
-    return result;
-  }
 
   /**
    * Функция фильтрует все комбинации. Т.е. убирает из них все занятые клетки

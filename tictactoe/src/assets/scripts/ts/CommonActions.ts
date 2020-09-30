@@ -96,4 +96,20 @@ export default class CommonActions extends Data {
       this.message.innerHTML = mgs;
     }
   }
+
+  /**
+   * Функция принимает массив чисел (которые уже имеются либо у ИИ, либо у игрока)
+   * И находит по этим числам все кобинации, которые могут привести к победе
+   * Функция не учитывает занятые клетки, она не фильтрует
+   * @param arr
+   */
+  getAllCombo(arr: number[]): TCombinations[] {
+    const result: TCombinations[] = [];
+
+    this.combinations.forEach((combination) => {
+      arr.forEach((number) => combination.includes(number) && result.push(combination));
+    });
+
+    return result;
+  }
 }
