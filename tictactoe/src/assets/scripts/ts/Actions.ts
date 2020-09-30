@@ -5,6 +5,7 @@ import { TCombinations } from './definitions/types';
 export default class Actions extends Dom {
   combinations: TCombinations[];
   aIWinsCombinations: TCombinations[];
+  playerWinsCombinations: TCombinations[];
   aI: number[];
   player: number[];
   cellsId: number[];
@@ -23,12 +24,14 @@ export default class Actions extends Dom {
     ];
     this.aI = [];
     this.aIWinsCombinations = []; // Тут содержаться все комбинации, которые позволяют Ai выиграть
+    this.playerWinsCombinations = []; // Тут содержаться все комбинации, которые позволяют Ai выиграть
     this.player = [];
     this.cellsId = Array.from(Array(9).keys());
 
     this.playerMove = this.playerMove.bind(this);
-    this.filteredUsedCellsAi = this.filteredUsedCellsAi.bind(this);
-    this.filteredUsedCellsPersonForAI = this.filteredUsedCellsPersonForAI.bind(this);
+    this.filteredUsedCells = this.filteredUsedCells.bind(this);
+    this.filteredUsedCellsPersonOrAI = this.filteredUsedCellsPersonOrAI.bind(this);
+    this.getIdAndGetCell = this.getIdAndGetCell.bind(this);
     this.aIMove = this.aIMove.bind(this);
     this.start = this.start.bind(this);
     this.reset = this.reset.bind(this);
@@ -66,7 +69,7 @@ export default class Actions extends Dom {
     this.aI = [];
     this.player = [];
     this.cellsId = Array.from(Array(9).keys());
-    this.cells.forEach(cell => {
+    this.cells.forEach((cell) => {
       if (isHTMLElement(cell)) cell.classList.remove(this.classes.tic, this.classes.tac, this.classes.nonActive);
     });
     this.aIMoveFirstMove();
@@ -87,6 +90,16 @@ export default class Actions extends Dom {
           cell.classList.add(this.classes.tic, this.classes.nonActive);
 
           this.filterNumbers(+id);
+
+          /**
+           * Тут Я получаю все комбинации для выигрыша у человека
+           * Они не отфильтрованы
+           */
+          this.playerWinsCombinations = this.getAllCombo(this.player);
+
+          this.player.forEach(number => this.filteredUsedCells(number, 'player'));
+          this.aI.forEach(number => this.filteredUsedCellsPersonOrAI(number, 'player'));
+
           this.aIMove();
 
           if (this.player.length >= 3) {
@@ -115,31 +128,14 @@ export default class Actions extends Dom {
      * Следующие 2 строчки сначала фильтруют все занятые клетки ИИ
      * Потом удаляют комбинации, в которых есть занятые клетки игроком
      */
-    this.aI.forEach(this.filteredUsedCellsAi);
-    this.player.forEach(this.filteredUsedCellsPersonForAI);
+    this.aI.forEach(number => this.filteredUsedCells(number, 'AI'));
+    this.player.forEach(number => this.filteredUsedCellsPersonOrAI(number, 'AI'));
 
     /**
      * Следующие строки выбирают оптимальное решение из полученных комбинаций.
      * Чем меньше длина массива, тем лучше (тем меньше осталось ходов)
      */
-    let res: number[] = [];
-    this.aIWinsCombinations.forEach(combination => {
-      if (res.length === 0) {
-        res = combination;
-      }
-
-      if (res.length > combination.length) {
-        res = combination;
-      }
-    });
-    const [id] = res;
-
-
-    if (id !== undefined) {
-      this.aiGetCell(id);
-    } else {
-      this.aiGetCell(this.cellsId[0]);
-    }
+    this.getIdAndGetCell();
 
     if (this.aI.length >= 3) {
       const isWin = this.checkWin(this.aI); // Проверка победы Игрока
@@ -162,8 +158,8 @@ export default class Actions extends Dom {
   getAllCombo(arr: number[]): TCombinations[] {
     const result: TCombinations[] = [];
 
-    this.combinations.forEach(combination => {
-      arr.forEach(number => combination.includes(number) && result.push(combination));
+    this.combinations.forEach((combination) => {
+      arr.forEach((number) => combination.includes(number) && result.push(combination));
     });
 
     return result;
@@ -171,19 +167,65 @@ export default class Actions extends Dom {
 
   /**
    * Функция фильтрует все комбинации. Т.е. убирает из них все занятые клетки
-   * @param number
    */
-  filteredUsedCellsAi(number: number): void {
-    this.aIWinsCombinations = this.aIWinsCombinations.map(combination => combination.filter(num => number !== num));
+  filteredUsedCells(number: number, target: 'AI' | 'player'): void {
+    if (target === 'AI') {
+      this.aIWinsCombinations =
+        this.aIWinsCombinations.map((combination) => combination.filter((num) => number !== num));
+    } else {
+      this.playerWinsCombinations =
+        this.playerWinsCombinations.map((combination) => combination.filter((num) => number !== num));
+    }
   }
 
   /**
    * Эта строчка фильтрует комбинации, в которых есть клетки игрока и они не подходят
    * Т.Е. не подходит вся комбинация, если есть хотя бы 1 клетка
-   * @param number
    */
-  filteredUsedCellsPersonForAI(number: number): void {
-    this.aIWinsCombinations = this.aIWinsCombinations.filter(combination => !combination.includes(number));
+  filteredUsedCellsPersonOrAI(number: number, target: 'AI' | 'player'): void {
+    if (target === 'AI') {
+      this.aIWinsCombinations = this.aIWinsCombinations.filter((combination) => !combination.includes(number));
+    } else {
+      this.playerWinsCombinations = this.playerWinsCombinations.filter((combination) => !combination.includes(number));
+    }
+  }
+
+  /**
+   * В этой функции Я выбираю подходящую, наилучшую комбинацию для следующего хода.
+   * Чем меньше чисел внутри комбинации, тем она лучше. Поэтому Я сравниваю длину массива
+   * Сначала Я беру самый первый массив, а потом заменяю его на самый короткий
+   */
+  getIdAndGetCell(): void {
+    let res: number[] = [];
+
+    this.aIWinsCombinations.forEach((combination) => {
+      if (res.length === 0) {
+        res = combination;
+      }
+
+      if (res.length > combination.length) {
+        res = combination;
+      }
+    });
+
+    // Тут Я выбираю
+    this.playerWinsCombinations.forEach((combination) => {
+      if (combination.length < res.length) {
+        res = combination;
+      }
+    });
+
+    const [id] = res;
+
+    /**
+     * Если ID равен undefined, значит у нас ничья. И так как компьютер ходит первым
+     * у нас остается последнее число, на котором игра завершается.
+     */
+    if (id !== undefined) {
+      this.aiGetCell(id);
+    } else {
+      this.aiGetCell(this.cellsId[0]);
+    }
   }
 
   aIMoveFirstMove(): void {
@@ -225,7 +267,7 @@ export default class Actions extends Dom {
     function getResult(combo: TCombinations): boolean {
       let count = 0;
 
-      combo.forEach(number => {
+      combo.forEach((number) => {
         if (count === 3) {
           return count === 3;
         }
@@ -248,7 +290,7 @@ export default class Actions extends Dom {
    * @param {number} id - выбранный ID
    */
   filterNumbers(id: number): void {
-    this.cellsId = this.cellsId.filter(number => number !== id);
+    this.cellsId = this.cellsId.filter((number) => number !== id);
   }
 
   /**
