@@ -9,9 +9,11 @@ html(lang='ru')
     div.wrapper
       include ../partials/header
 
+      p#message
+
       div
         button(id='start' type='button') Начать игру
-        button(id='reset' type='button') Сброс
+        button(id='reset' type='button' disabled) Сброс
 
       div#root
         div(class='field field--is-active')
