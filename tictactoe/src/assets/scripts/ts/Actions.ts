@@ -1,4 +1,4 @@
-import { isHTMLElement } from './helpers';
+import { getMaxOfArray, isHTMLElement } from './helpers';
 import { TCombinations } from './definitions/types';
 import CommonActions from './CommonActions';
 
@@ -10,7 +10,6 @@ export default class Actions extends CommonActions {
     this.filteredUsedCells = this.filteredUsedCells.bind(this);
     this.getIdAndGetCell = this.getIdAndGetCell.bind(this);
     this.playerMove = this.playerMove.bind(this);
-    this.setMessage = this.setMessage.bind(this);
     this.aIMove = this.aIMove.bind(this);
     this.start = this.start.bind(this);
   }
@@ -156,35 +155,44 @@ export default class Actions extends CommonActions {
    */
   getIdAndGetCell(): void {
     let res: number[] = [];
+    let id: number;
 
-    this.aIWinsCombinations.forEach((combination) => {
-      if (res.length === 0) {
-        res = combination;
-      }
+    /**
+     * Проверка, которая срабатывает на первом ходу. Если 4 свободна, то
+     * ИИ занимает её, так как это самая выгодная для него позиция
+     */
+    if (this.cellsId.includes(4)) {
+      id = 4;
+    } else {
+      this.aIWinsCombinations.forEach((combination) => {
+        if (res.length === 0) {
+          res = combination;
+        }
 
-      if (res.length > combination.length) {
-        res = combination;
-      }
-    });
+        if (res.length >= combination.length) {
+          res = combination;
+        }
+      });
 
-    // Тут Я выбираю
-    this.playerWinsCombinations.forEach((combination) => {
-      if (combination.length < res.length) {
-        res = combination;
-      }
-    });
+      // Тут Я выбираю
+      this.playerWinsCombinations.forEach((combination) => {
+        if (combination.length < res.length) {
+          res = combination;
+        }
+      });
 
-    const [id] = res;
+      id = getMaxOfArray(res);
+    }
 
     /**
      * Если ID равен undefined, значит у нас ничья. И так как компьютер ходит первым
      * у нас остается последнее число, на котором игра завершается.
      */
-    if (id !== undefined) {
+    // eslint-disable-next-line no-restricted-globals
+    if (isFinite(id)) {
       this.aiGetCell(id);
     } else {
       this.aiGetCell(this.cellsId[0]);
-
       this.setMessage('Ничья');
     }
   }
@@ -211,7 +219,7 @@ export default class Actions extends CommonActions {
     function getResult(combo: TCombinations): boolean {
       let count = 0;
 
-      combo.forEach((number) => {
+      combo.forEach(number => {
         if (count === 3) {
           return count === 3;
         }

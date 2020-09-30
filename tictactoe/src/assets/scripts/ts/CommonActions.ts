@@ -6,6 +6,7 @@ export default class CommonActions extends Data {
     super();
 
     this.reset = this.reset.bind(this);
+    this.setMessage = this.setMessage.bind(this);
   }
 
   init(): void {
